@@ -4,40 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WordFamily Pro - Morphology Dictionary</title>
+    <title>WordFamily Pro - Ultimate Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&display=swap');
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: #050505;
-            color: #e2e8f0;
-        }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s ease;
-        }
-
-        .word-card {
-            animation: fadeIn 0.4s ease forwards;
-            opacity: 0;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Tùy chỉnh thanh cuộn */
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #050505; color: #e2e8f0; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .word-card { animation: fadeIn 0.3s ease forwards; opacity: 0; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #312e81; border-radius: 10px; }
     </style>
 </head>
@@ -47,11 +25,11 @@
     <div id="authOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl">
         <div class="glass p-10 rounded-[2.5rem] w-full max-w-sm text-center">
             <h2 class="text-3xl font-extrabold mb-2 tracking-tighter">WF<span class="text-indigo-500">.PRO</span></h2>
-            <p class="text-gray-400 text-xs mb-8 uppercase tracking-widest">Morphology Tool</p>
+            <p class="text-gray-400 text-xs mb-8 uppercase tracking-widest text-[10px]">Morphology Dictionary</p>
             <input type="email" id="email" placeholder="Email" class="w-full p-4 mb-3 bg-white/5 border border-white/10 rounded-2xl outline-none focus:ring-2 ring-indigo-500/50">
             <input type="password" id="password" placeholder="Mật khẩu" class="w-full p-4 mb-8 bg-white/5 border border-white/10 rounded-2xl outline-none focus:ring-2 ring-indigo-500/50">
             <div class="flex gap-3">
-                <button onclick="authAction('login')" class="flex-1 bg-indigo-600 hover:bg-indigo-500 p-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-500/20">Vào App</button>
+                <button onclick="authAction('login')" class="flex-1 bg-indigo-600 hover:bg-indigo-500 p-4 rounded-2xl font-bold transition-all">Vào App</button>
                 <button onclick="authAction('reg')" class="flex-1 border border-white/10 hover:bg-white/5 p-4 rounded-2xl transition-all">Đăng ký</button>
             </div>
             <p id="msg" class="text-xs mt-4 text-rose-400"></p>
@@ -62,19 +40,19 @@
         <header class="flex flex-col md:flex-row justify-between items-center gap-8 mb-16">
             <div>
                 <h1 class="text-4xl font-extrabold tracking-tighter">WORD<span class="text-indigo-500">FAMILY</span></h1>
-                <p class="text-gray-500 text-sm">Tra cứu gốc từ và các dạng biến thể hình thái học</p>
+                <p class="text-gray-500 text-sm">Công cụ phân tích cấu trúc từ vựng chuyên sâu</p>
             </div>
 
-            <div class="relative w-full md:w-[450px]">
+            <div class="relative w-full md:w-[500px]">
                 <input type="text" id="wordInput" onkeypress="if(event.key==='Enter') findWF()" 
-                    placeholder="Nhập từ gốc (vd: success, beauty)..."
-                    class="w-full p-5 pl-7 bg-white/5 border border-white/10 rounded-[2rem] outline-none focus:ring-4 ring-indigo-500/20 text-lg transition-all">
-                <button onclick="findWF()" class="absolute right-3 top-3 bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2.5 rounded-[1.5rem] font-bold shadow-lg shadow-indigo-500/20 transition-all">
+                    placeholder="Nhập thành công, áp lực, đám đông..."
+                    class="w-full p-5 pl-7 bg-white/5 border border-white/10 rounded-[2rem] outline-none focus:ring-4 ring-indigo-500/20 text-lg">
+                <button onclick="findWF()" class="absolute right-3 top-3 bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-2.5 rounded-[1.5rem] font-bold shadow-lg transition-all">
                     Phân tích
                 </button>
             </div>
             
-            <button onclick="firebase.auth().signOut()" class="text-xs text-gray-500 hover:text-white transition-colors">Đăng xuất</button>
+            <button onclick="firebase.auth().signOut()" class="text-[10px] font-bold text-gray-500 hover:text-rose-400 uppercase tracking-widest transition-colors">Đăng xuất</button>
         </header>
 
         <section id="results" class="hidden">
@@ -82,7 +60,7 @@
                 <h2 id="rootWord" class="text-7xl font-black uppercase tracking-tighter text-white mb-4"></h2>
                 <div class="flex justify-center items-center gap-4">
                     <span id="ipa" class="text-xl text-indigo-300/60 font-medium italic"></span>
-                    <button id="audioBtn" onclick="playAudio()" class="p-3 bg-white/5 hover:bg-white/10 rounded-full transition-all border border-white/10">
+                    <button id="audioBtn" onclick="playAudio()" class="p-3 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-all">
                         🔊
                     </button>
                 </div>
@@ -90,35 +68,35 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="glass p-8 rounded-[2.5rem] border-t-4 border-indigo-500">
-                    <span class="px-4 py-1 bg-indigo-500/10 text-indigo-400 text-[10px] font-black rounded-lg uppercase tracking-widest mb-6 inline-block">Động từ</span>
+                    <span class="px-3 py-1 bg-indigo-500/10 text-indigo-400 text-[10px] font-black rounded-md uppercase tracking-widest mb-6 inline-block">Động từ</span>
                     <div id="v-list" class="space-y-3"></div>
                 </div>
 
                 <div class="glass p-8 rounded-[2.5rem] border-t-4 border-emerald-500">
-                    <span class="px-4 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-black rounded-lg uppercase tracking-widest mb-6 inline-block">Danh từ</span>
+                    <span class="px-3 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-black rounded-md uppercase tracking-widest mb-6 inline-block">Danh từ</span>
                     <div id="n-list" class="space-y-3"></div>
                 </div>
 
                 <div class="glass p-8 rounded-[2.5rem] border-t-4 border-amber-500">
-                    <span class="px-4 py-1 bg-amber-500/10 text-amber-400 text-[10px] font-black rounded-lg uppercase tracking-widest mb-6 inline-block">Tính từ</span>
+                    <span class="px-3 py-1 bg-amber-500/10 text-amber-400 text-[10px] font-black rounded-md uppercase tracking-widest mb-6 inline-block">Tính từ</span>
                     <div id="adj-list" class="space-y-3"></div>
                 </div>
 
                 <div class="glass p-8 rounded-[2.5rem] border-t-4 border-rose-500">
-                    <span class="px-4 py-1 bg-rose-500/10 text-rose-400 text-[10px] font-black rounded-lg uppercase tracking-widest mb-6 inline-block">Trạng từ</span>
+                    <span class="px-3 py-1 bg-rose-500/10 text-rose-400 text-[10px] font-black rounded-md uppercase tracking-widest mb-6 inline-block">Trạng từ</span>
                     <div id="adv-list" class="space-y-3"></div>
                 </div>
             </div>
 
             <div class="mt-20 pt-10 border-t border-white/5">
-                <h3 class="text-[10px] font-black text-gray-600 uppercase mb-6 tracking-widest">Lịch sử tra từ</h3>
-                <div id="history" class="flex flex-wrap gap-3"></div>
+                <h3 class="text-[10px] font-black text-gray-600 uppercase mb-6 tracking-widest">Từ vựng đã phân tích</h3>
+                <div id="history" class="flex flex-wrap gap-2"></div>
             </div>
         </section>
     </div>
 
     <script>
-        // CẤU HÌNH FIREBASE
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyDNZlPQMDzCebPOY5Se0OpFsh7AkheZMOk",
             authDomain: "wordform-477a3.firebaseapp.com",
@@ -132,7 +110,6 @@
         const auth = firebase.auth(), db = firebase.firestore();
         let player = null, user = null;
 
-        // AUTH
         async function authAction(t) {
             const e = document.getElementById('email').value, p = document.getElementById('password').value;
             try {
@@ -148,31 +125,33 @@
             if (u) loadHistory();
         });
 
-        // CORE LOGIC
+        // CORE LOGIC (VÀNG: SỬA LỖI TẠI ĐÂY)
         async function findWF() {
             const word = document.getElementById('wordInput').value.trim().toLowerCase();
             if (!word) return;
-
-            document.getElementById('rootWord').innerText = "...";
+            document.getElementById('rootWord').innerText = "Analyzing...";
 
             try {
-                const [dictRes, derRes] = await Promise.all([
+                // Chạy đồng thời 3 luồng để lấy dữ liệu tối đa
+                const [dictRes, derRes, suffixRes] = await Promise.all([
                     fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`).then(r => r.ok ? r.json() : null),
-                    fetch(`https://api.datamuse.com/words?rel_der=${word}&md=p&max=50`).then(r => r.json())
+                    fetch(`https://api.datamuse.com/words?rel_der=${word}&md=p&max=50`).then(r => r.json()),
+                    fetch(`https://api.datamuse.com/words?sp=${word}*&md=p&max=50`).then(r => r.json()) // Lấy các từ bắt đầu bằng word
                 ]);
 
-                render(word, dictRes ? dictRes[0] : null, derRes);
+                // Gộp dữ liệu từ Datamuse
+                const combinedData = [...derRes, ...suffixRes];
+                render(word, dictRes ? dictRes[0] : null, combinedData);
                 saveHistory(word);
             } catch (error) {
-                console.error("Lỗi:", error);
+                console.error(error);
             }
         }
 
-        function render(word, dict, derData) {
+        function render(word, dict, relatedData) {
             document.getElementById('results').classList.remove('hidden');
             document.getElementById('rootWord').innerText = word;
             
-            // Phonetic & Audio
             document.getElementById('ipa').innerText = dict?.phonetic || dict?.phonetics?.find(p => p.text)?.text || '';
             const audioSrc = dict?.phonetics?.find(p => p.audio !== '')?.audio;
             player = audioSrc ? new Audio(audioSrc) : null;
@@ -180,7 +159,7 @@
 
             const wf = { v: [], n: [], adj: [], adv: [] };
 
-            // 1. Phân loại từ gốc từ Dictionary
+            // 1. Phân loại từ gốc từ Dictionary API
             dict?.meanings.forEach(m => {
                 const pos = m.partOfSpeech.toLowerCase();
                 if (pos.includes('verb')) wf.v.push(word);
@@ -189,15 +168,16 @@
                 if (pos.includes('adv')) wf.adv.push(word);
             });
 
-            // 2. Lọc thông minh (Strict Filter)
-            derData.forEach(item => {
+            // 2. Logic lọc "Họ hàng" thông minh
+            relatedData.forEach(item => {
                 const w = item.word.toLowerCase();
                 
-                // Điều kiện Word Family: Phải chứa gốc từ (vd: pressure chứa press)
-                // Hoặc bắt đầu bằng ít nhất 80% chiều dài từ gốc (tránh president vs pressure)
-                const isStrictFamily = w.includes(word) || (word.length > 3 && w.startsWith(word.substring(0, Math.floor(word.length * 0.8))));
+                // Điều kiện lọc:
+                // - Từ đó phải chứa từ gốc (vd: crowded chứa crowd)
+                // - HOẶC từ đó có độ tương đồng cao (trường hợp biến đổi đuôi phức tạp)
+                const isFamily = w.includes(word) || (word.length > 4 && w.startsWith(word.substring(0, 4)) && w.length < word.length + 5);
 
-                if (isStrictFamily && item.tags) {
+                if (isFamily && item.tags) {
                     if (item.tags.includes('v')) wf.v.push(w);
                     if (item.tags.includes('n')) wf.n.push(w);
                     if (item.tags.includes('adj')) wf.adj.push(w);
@@ -208,14 +188,17 @@
             const updateUI = (id, list) => {
                 const cleanList = [...new Set(list)].sort((a, b) => a.length - b.length);
                 document.getElementById(`${id}-list`).innerHTML = cleanList.length > 0 
-                    ? cleanList.map((w, index) => `
-                        <div class="word-card bg-white/5 p-4 rounded-xl border border-white/5 hover:border-indigo-500/50 transition-all cursor-pointer" 
-                             style="animation-delay: ${index * 0.05}s"
+                    ? cleanList.map((w, i) => `
+                        <div class="word-card bg-white/5 p-4 rounded-xl border border-white/5 hover:border-indigo-500/50 transition-all cursor-pointer group" 
+                             style="animation-delay: ${i * 0.05}s"
                              onclick="document.getElementById('wordInput').value='${w}';findWF()">
-                            <span class="font-bold text-indigo-100">${w}</span>
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-indigo-50">${w}</span>
+                                <span class="text-[8px] opacity-0 group-hover:opacity-100 text-indigo-400 font-black">VIEW</span>
+                            </div>
                         </div>
                     `).join('')
-                    : `<p class="text-gray-700 italic text-xs text-center py-6">No data found</p>`;
+                    : `<p class="text-gray-700 italic text-[11px] text-center py-6">No family found</p>`;
             };
 
             updateUI('v', wf.v); updateUI('n', wf.n); updateUI('adj', wf.adj); updateUI('adv', wf.adv);
@@ -232,10 +215,10 @@
         }
 
         function loadHistory() {
-            db.collection("users").doc(user.uid).collection("history").orderBy("time", "desc").limit(10).onSnapshot(s => {
+            db.collection("users").doc(user.uid).collection("history").orderBy("time", "desc").limit(12).onSnapshot(s => {
                 document.getElementById('history').innerHTML = s.docs.map(d =>
                     `<button onclick="document.getElementById('wordInput').value='${d.data().word}';findWF()" 
-                        class="px-4 py-2 bg-white/5 rounded-full text-xs border border-white/10 hover:bg-indigo-500 transition-all text-gray-400 hover:text-white">
+                        class="px-4 py-1.5 bg-white/5 rounded-full text-[10px] font-bold border border-white/5 hover:bg-indigo-500 transition-all text-gray-500 hover:text-white">
                         ${d.data().word}
                     </button>`
                 ).join('');
